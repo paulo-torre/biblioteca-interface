@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -10,9 +11,10 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private passwordSub?: Subscription;
 
   registerForm: FormGroup = this.fb.group({
     username: ['', [
@@ -35,6 +37,55 @@ export class RegisterComponent {
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+
+  hidePassword = true; 
+  passwordStrength = 0; 
+  passwordTracks = {
+    hasMinLength: false,
+    hasUppercase: false,
+    hasLowercase: false,
+    hasNumber: false,
+    hasSpecial: false
+  };
+
+  ngOnInit(): void {
+    this.passwordSub = this.registerForm.get('password')?.valueChanges.subscribe(value => {
+      this.checkPasswordStrength(value || '');
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.passwordSub) {
+      this.passwordSub.unsubscribe();
+    }
+  }
+
+  checkPasswordStrength(password: string): void {
+    this.passwordTracks.hasMinLength = password.length >= 8 && password.length <= 20;
+    this.passwordTracks.hasUppercase = /[A-Z]/.test(password);
+    this.passwordTracks.hasLowercase = /[a-z]/.test(password);
+    this.passwordTracks.hasNumber = /[0-9]/.test(password);
+    this.passwordTracks.hasSpecial = /[_.\-@!#$%&*]/.test(password);
+
+    this.passwordStrength = Object.values(this.passwordTracks).filter(Boolean).length;
+  }
+
+  togglePasswordVisibility(): void {
+    this.hidePassword = !this.hidePassword;
+  }
+
+  get strengthColorClass(): string {
+    if (this.passwordStrength <= 2) return 'weak';
+    if (this.passwordStrength <= 4) return 'medium';
+    return 'strong';
+  }
+
+  get strengthText(): string {
+    if (this.passwordStrength === 0) return 'Digite uma senha segura';
+    if (this.passwordStrength <= 2) return 'Senha vulnerável ou fraca ';
+    if (this.passwordStrength <= 4) return 'Senha de segurança média';
+    return 'Senha Segura';
+  }
 
   onSubmit(): void {
     if (this.registerForm.invalid) {

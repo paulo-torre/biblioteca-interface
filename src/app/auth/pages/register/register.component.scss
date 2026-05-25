@@ -56,6 +56,41 @@
         font-weight: 600;
       }
   
+      // Container do campo de senha + olho de IHC
+      .input-password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+  
+        input {
+          padding-right: 48px; // Garante que o texto da senha não sobreponha o olho
+        }
+  
+        .btn-toggle-password {
+          position: absolute;
+          right: 14px;
+          background: none;
+          border: none;
+          padding: 0;
+          margin: 0;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #9ca3af;
+          transition: color 0.2s ease;
+  
+          &:hover {
+            color: #4b5563;
+          }
+  
+          .icon-eye {
+            width: 20px;
+            height: 20px;
+          }
+        }
+      }
+  
       input {
         width: 100%;
         padding: 12px 16px;
@@ -97,6 +132,76 @@
           
           &:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px #fdf2f2 inset !important;
+          }
+        }
+      }
+    }
+  
+    // Componente IHC: Painel Progressivo de Dificuldade
+    .password-strength-wrapper {
+      margin-top: 14px;
+      animation: fadeIn 0.25s ease-in-out;
+  
+      .strength-meter {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 8px;
+  
+        .bar {
+          height: 5px;
+          flex: 1;
+          background-color: #e5e7eb;
+          border-radius: 4px;
+          transition: background-color 0.2s ease;
+        }
+  
+        &[data-score="1"] .bar:nth-child(1) { background-color: #ef4444; }
+        &[data-score="2"] .bar:nth-child(-n+2) { background-color: #ef4444; }
+        &[data-score="3"] .bar:nth-child(-n+3) { background-color: #f59e0b; }
+        &[data-score="4"] .bar:nth-child(-n+4) { background-color: #f59e0b; }
+        &[data-score="5"] .bar:nth-child(-n+5) { background-color: #10b981; }
+      }
+  
+      .strength-text {
+        font-size: 13px;
+        font-weight: 600;
+        display: block;
+        margin-bottom: 12px;
+  
+        &.weak { color: #dc2626; }
+        &.medium { color: #d97706; }
+        &.strong { color: #059669; }
+      }
+  
+      .strength-requirements {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+  
+        li {
+          font-size: 12px;
+          color: #9ca3af;
+          display: flex;
+          align-items: center;
+          transition: all 0.2s ease;
+  
+          .icon::before {
+            content: "○";
+            margin-right: 8px;
+            font-weight: bold;
+          }
+  
+          &.checked {
+            color: #059669;
+            font-weight: 500;
+  
+            .icon::before {
+              content: "✓";
+              color: #10b981;
+            }
           }
         }
       }
