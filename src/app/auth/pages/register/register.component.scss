@@ -14,7 +14,7 @@
   
     .register-card {
       background: #ffffff;
-      padding: 48px 40px;
+      padding: 40px 40px 48px 40px;
       border-radius: 16px;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 
                   0 8px 10px -6px rgba(0, 0, 0, 0.05);
@@ -23,24 +23,48 @@
       transition: transform 0.3s ease;
       box-sizing: border-box;
   
-      &:hover {
+      &:hover:not(:has(.btn-submit:disabled)) {
         transform: translateY(-2px);
       }
   
-      h2 {
-        margin: 0 0 6px 0;
-        color: #111827;
-        font-size: 28px;
-        font-weight: 700;
-        text-align: center;
-        letter-spacing: -0.5px;
-      }
+      .register-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 32px;
   
-      .subtitle {
-        margin: 0 0 32px 0;
-        color: #6b7280;
-        font-size: 15px;
-        text-align: center;
+        .brand-icon {
+          width: 48px;
+          height: 48px;
+          background-color: rgba(37, 99, 235, 0.08);
+          color: #2563eb;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 16px;
+  
+          svg {
+            width: 26px;
+            height: 26px;
+          }
+        }
+  
+        h2 {
+          margin: 0 0 6px 0;
+          color: #111827;
+          font-size: 26px;
+          font-weight: 700;
+          text-align: center;
+          letter-spacing: -0.5px;
+        }
+  
+        .subtitle {
+          margin: 0;
+          color: #6b7280;
+          font-size: 14px;
+          text-align: center;
+        }
       }
     }
   
@@ -48,22 +72,27 @@
       margin-bottom: 24px;
       text-align: left;
   
+      &:focus-within label:not(.is-invalid) {
+        color: #2563eb;
+      }
+  
       label {
         display: block;
         margin-bottom: 8px;
         color: #374151;
         font-size: 14px;
         font-weight: 600;
+        transition: color 0.2s ease;
       }
   
-      // Container do campo de senha + olho de IHC
       .input-password-wrapper {
         position: relative;
         display: flex;
         align-items: center;
+        width: 100%;
   
         input {
-          padding-right: 48px; // Garante que o texto da senha não sobreponha o olho
+          padding-right: 48px;
         }
   
         .btn-toggle-password {
@@ -80,8 +109,12 @@
           color: #9ca3af;
           transition: color 0.2s ease;
   
-          &:hover {
+          &:hover:not(:disabled) {
             color: #4b5563;
+          }
+          &:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
           }
   
           .icon-eye {
@@ -100,17 +133,26 @@
         color: #1f2937;
         background-color: #f9fafb;
         box-sizing: border-box;
-        transition: background-color 0s, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
   
         &::placeholder {
           color: #9ca3af;
         }
   
-        &:focus {
+        &:focus:not(:disabled) {
           outline: none;
           border-color: #2563eb;
           background-color: #ffffff !important;
           box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        &:disabled {
+          background-color: #f3f4f6 !important;
+          color: #9ca3af !important;
+          border-color: #e5e7eb !important;
+          cursor: not-allowed;
+          opacity: 0.7;
+          -webkit-text-fill-color: #9ca3af !important;
         }
   
         &:-webkit-autofill,
@@ -125,19 +167,14 @@
           border-color: #ef4444;
           background-color: #fdf2f2;
   
-          &:focus {
+          &:focus:not(:disabled) {
             background-color: #ffffff !important;
             box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
-          }
-          
-          &:-webkit-autofill {
-            -webkit-box-shadow: 0 0 0px 1000px #fdf2f2 inset !important;
           }
         }
       }
     }
   
-    // Componente IHC: Painel Progressivo de Dificuldade
     .password-strength-wrapper {
       margin-top: 14px;
       animation: fadeIn 0.25s ease-in-out;
@@ -241,13 +278,12 @@
       box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
       transition: all 0.2s ease;
       box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
   
       &:hover:not(:disabled) {
         background-color: #1d4ed8;
-      }
-  
-      &:active:not(:disabled) {
-        transform: scale(0.98);
       }
   
       &:disabled {
@@ -255,6 +291,24 @@
         color: #e5e7eb;
         box-shadow: none;
         cursor: not-allowed;
+        opacity: 0.8;
+      }
+      .spinner-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+  
+        .spinner {
+          animation: rotate 2s linear infinite;
+          width: 20px;
+          height: 20px;
+          
+          & .path {
+            stroke: #ffffff;
+            stroke-linecap: round;
+            animation: dash 1.5s ease-in-out infinite;
+          }
+        }
       }
     }
   
@@ -264,6 +318,7 @@
       margin-bottom: 24px;
       font-size: 14px;
       font-weight: 500;
+      animation: fadeIn 0.2s ease-in-out;
   
       &.alert-danger {
         background-color: #fde8e8;
@@ -277,6 +332,16 @@
         border: 1px solid #84e1bc;
       }
     }
+  }
+  
+  @keyframes rotate {
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes dash {
+    0% { stroke-dasharray: 1, 150; stroke-dashoffset: 0; }
+    50% { stroke-dasharray: 90, 150; stroke-dashoffset: -35; }
+    100% { stroke-dasharray: 90, 150; stroke-dashoffset: -124; }
   }
   
   @keyframes fadeIn {
