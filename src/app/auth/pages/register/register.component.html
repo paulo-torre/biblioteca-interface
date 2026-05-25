@@ -1,0 +1,64 @@
+<div class="register-container">
+    <div class="register-card">
+      <h2>Criar Conta</h2>
+      <p class="subtitle">Bem-vindo à Biblioteca Virtual</p>
+  
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+  
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        
+        <div class="form-group">
+          <label for="username">Nome de usuário</label>
+          <input 
+            id="username" 
+            type="text" 
+            formControlName="username" 
+            placeholder="Ex: dev_master"
+            [ngClass]="{'is-invalid': f['username'].touched && f['username'].invalid}"
+          />
+          <div *ngIf="f['username'].touched && f['username'].errors" class="error-feedback">
+            <small *ngIf="f['username'].errors['required']">O nome de usuário é obrigatório.</small>
+            <small *ngIf="f['username'].errors['minlength']">Mínimo de 3 caracteres.</small>
+            <small *ngIf="f['username'].errors['pattern']">Apenas letras, números, '.', '_' ou '-'.</small>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input 
+            id="email" 
+            type="email" 
+            formControlName="email" 
+            placeholder="seu-email@gmail.com"
+            [ngClass]="{'is-invalid': f['email'].touched && f['email'].invalid}"
+          />
+          <div *ngIf="f['email'].touched && f['email'].errors" class="error-feedback">
+            <small *ngIf="f['email'].errors['required']">O e-mail é obrigatório.</small>
+            <small *ngIf="f['email'].errors['email']">Insira um e-mail válido.</small>
+          </div>
+        </div>
+  
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input 
+            id="password" 
+            type="password" 
+            formControlName="password" 
+            placeholder="********"
+            [ngClass]="{'is-invalid': f['password'].touched && f['password'].invalid}"
+          />
+          <div *ngIf="f['password'].touched && f['password'].errors" class="error-feedback">
+            <small *ngIf="f['password'].errors['required']">A senha é obrigatória.</small>
+            <small *ngIf="f['password'].errors['minlength'] || f['password'].errors['maxlength']">A senha deve ter entre 8 e 20 caracteres.</small>
+            <small *ngIf="f['password'].errors['pattern']">Deve conter letra, número e caractere especial (_.-&#64;!#$%&*).</small>
+          </div>
+        </div>
+  
+        <button type="submit" [disabled]="registerForm.invalid || isLoading" class="btn-submit">
+          {{ isLoading ? 'Cadastrando...' : 'Cadastrar' }}
+        </button>
+  
+      </form>
+    </div>
+  </div>
