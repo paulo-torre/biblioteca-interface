@@ -115,10 +115,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   get strengthText(): string {
-    if (this.passwordStrength === 0) return 'Digite uma senha segura';
-    if (this.passwordStrength <= 2) return 'Senha vulnerável ou fraca ';
-    if (this.passwordStrength <= 4) return 'Senha de segurança média';
-    return 'Senha Segura';
+    if (this.passwordStrength === 0) return 'Escolha uma senha para sua jornada';
+    if (this.passwordStrength <= 2) return 'Fraca';
+    if (this.passwordStrength <= 4) return 'Média';
+    return 'Segura';
   }
 
   onSubmit(): void {
@@ -134,11 +134,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
         this.isLoading = false;
-        this.successMessage = 'Cadastro realizado! Enviamos os códigos de verificação para o seu e-mail e SMS.';
+        this.successMessage = 'Sua página foi criada. Verifique seu e-mail e SMS para confirmar os códigos de validação.';
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.detail || 'Ocorreu um erro ao realizar o cadastro.';
+        this.errorMessage = err.error?.detail || 'Ocorreu um erro ao iniciar o seu registro.';
       }
     });
   }
