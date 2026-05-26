@@ -17,7 +17,25 @@
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         
         <div class="form-group">
-          <label for="username">Nome de usuário</label>
+          <label for="fullName">Nome</label>
+          <input 
+            id="fullName" 
+            type="text" 
+            formControlName="fullName" 
+            placeholder="Ex: Felipe Dias"
+            [attr.disabled]="isLoading ? true : null"
+            [ngClass]="{'is-invalid': f['fullName'].touched && f['fullName'].invalid}"
+          />
+          <div *ngIf="f['fullName'].touched && f['fullName'].errors" class="error-feedback">
+            <small *ngIf="f['fullName'].errors['required']">O nome completo é obrigatório.</small>
+            <small *ngIf="f['fullName'].errors['minlength']">Mínimo de 3 caracteres.</small>
+            <small *ngIf="f['fullName'].errors['maxlength']">Máximo de 80 caracteres.</small>
+            <small *ngIf="f['fullName'].errors['pattern']">O nome deve conter apenas letras.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="username">Nome de usuário (Nickname)</label>
           <input 
             id="username" 
             type="text" 
@@ -46,6 +64,22 @@
           <div *ngIf="f['email'].touched && f['email'].errors" class="error-feedback">
             <small *ngIf="f['email'].errors['required']">O e-mail é obrigatório.</small>
             <small *ngIf="f['email'].errors['email']">Insira um e-mail válido.</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Telefone celular</label>
+          <input 
+            id="phone" 
+            type="text" 
+            formControlName="phone" 
+            placeholder="(XX) XXXXX-XXXX"
+            [attr.disabled]="isLoading ? true : null"
+            [ngClass]="{'is-invalid': f['phone'].touched && f['phone'].invalid}"
+          />
+          <div *ngIf="f['phone'].touched && f['phone'].errors" class="error-feedback">
+            <small *ngIf="f['phone'].errors['required']">O telefone celular é obrigatório.</small>
+            <small *ngIf="f['phone'].errors['pattern']">Insira um formato válido: (XX) 9XXXX-XXXX.</small>
           </div>
         </div>
   

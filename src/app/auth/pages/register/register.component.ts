@@ -15,16 +15,29 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private passwordSub?: Subscription;
+  private phoneSub?: Subscription;
 
   registerForm: FormGroup = this.fb.group({
+    fullName: ['', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(80),
+      Validators.pattern(/^[a-zA-ZÀ-ÿ\s]+$/)
+    ]],
     username: ['', [
       Validators.required, 
       Validators.minLength(3),
+      Validators.maxLength(20),
       Validators.pattern(/^[a-zA-Z0-9._-]+$/) 
     ]],
     email: ['', [
       Validators.required, 
-      Validators.email
+      Validators.email,
+      Validators.maxLength(100)
+    ]],
+    phone: ['', [
+      Validators.required,
+      Validators.pattern(/^\(\d{2}\)\s9\d{4}-\d{4}$/)
     ]],
     password: ['', [
       Validators.required,
@@ -52,12 +65,33 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.passwordSub = this.registerForm.get('password')?.valueChanges.subscribe(value => {
       this.checkPasswordStrength(value || '');
     });
+
+    this.phoneSub = this.registerForm.get('phone')?.valueChanges.subscribe(value => {
+      this.applyPhoneMask(value || '');
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.passwordSub) {
-      this.passwordSub.unsubscribe();
+    if (this.passwordSub) this.passwordSub.unsubscribe();
+    if (this.phoneSub) this.phoneSub.unsubscribe();
+  }
+
+  applyPhoneMask(value: string): void {
+    let raw = value.replace(/\D/g, '');
+    if (raw.length > 11) raw = raw.substring(0, 11);
+
+    let masked = '';
+    if (raw.length > 0) {
+      masked = `(${raw.substring(0, 2)}`;
+      if (raw.length > 2) {
+        masked += `) ${raw.substring(2, 7)}`;
+        if (raw.length > 7) {
+          masked += `-${raw.substring(7, 11)}`;
+        }
+      }
     }
+
+    this.registerForm.get('phone')?.setValue(masked, { emitEvent: false });
   }
 
   checkPasswordStrength(password: string): void {
@@ -100,7 +134,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
         this.isLoading = false;
-        this.successMessage = 'Cadastro realizado! Verifique seu e-mail para confirmar o código.';
+        this.successMessage = 'Cadastro realizado! Enviamos os códigos de verificação para o seu e-mail e SMS.';
       },
       error: (err) => {
         this.isLoading = false;
